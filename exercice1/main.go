@@ -4,6 +4,8 @@ import "fmt"
 
 func main() {
 	degats := 0
+	nbatk := 0
+	nbatkinv := 0
 	equipe := [6]Soldat{
 		{"Arthas", 1200, 250},
 		{"Kael", 850, 320},
@@ -19,12 +21,23 @@ func main() {
 	fmt.Println("Le soldat avec le plus d'attaque est:", atkplus.nom, "avec :", atkplus.attaque, "d'attaque")
 	moyenne := calculerVieMoyenne(equipe)
 	fmt.Println("Vie moyenne :", moyenne)
-	nbinf := compterFaibles(equipe)
-	fmt.Println("Soldats avec moins de 800 PV :", nbinf)
-	fmt.Println("un ennemi attaque combien fait-il de degats ?")
-	fmt.Scan(&degats)
-	attaquerEquipe(&equipe, degats)
-	afficherEtat(equipe)
+	for peutContinuer(equipe) == true {
+
+		nbinf := compterFaibles(equipe)
+		fmt.Println("Soldats avec moins de 800 PV :", nbinf)
+		fmt.Printf("Nombre d'attaques ennemies : ")
+		fmt.Scan(&nbatk)
+		for nbatkinv < nbatk {
+			fmt.Printf("attaque %d :", nbatkinv+1)
+			fmt.Scan(&degats)
+			attaquerEquipe(&equipe, degats)
+			afficherEtat(equipe)
+			nbatkinv++
+		}
+		peutContinuer(equipe)
+		fmt.Println("L'équipe peut continuer le combat !")
+	}
+	fmt.Println("Tous les soldats sont KO... \n La bataille est terminée !")
 }
 
 type Soldat struct {
@@ -72,7 +85,7 @@ func calculerVieMoyenne(equipe [6]Soldat) float64 {
 func compterFaibles(equipe [6]Soldat) int {
 	cpt := 0
 	for i := 0; i < len(equipe); i++ {
-		if equipe[i].vie < 800 {
+		if equipe[i].vie < 800 && equipe[i].vie > 0 {
 			cpt++
 		}
 	}
@@ -92,5 +105,33 @@ func afficherEtat(equipe [6]Soldat) {
 		} else {
 			fmt.Println("vie :", equipe[i].vie)
 		}
+	}
+}
+func compterVivants(equipe [6]Soldat, index int) int {
+	if index >= len(equipe) {
+		return 0
+	}
+	nbviv := 0
+	if equipe[index].vie > 0 {
+		nbviv++
+	}
+	return nbviv
+}
+func peutContinuer(equipe [6]Soldat) bool {
+	mort := 0
+	vivant := 0
+	for i := 0; i < len(equipe); i++ {
+		if equipe[i].vie <= 0 {
+			mort++
+		} else {
+			vivant++
+		}
+	}
+	fmt.Println("Nombre de soldats vivants :", vivant)
+	fmt.Println("Nombre de soldats KO :", mort)
+	if vivant == 0 {
+		return false
+	} else {
+		return true
 	}
 }
