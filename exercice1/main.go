@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 func main() {
+	degats := 0
 	equipe := [6]Soldat{
 		{"Arthas", 1200, 250},
 		{"Kael", 850, 320},
@@ -20,6 +21,10 @@ func main() {
 	fmt.Println("Vie moyenne :", moyenne)
 	nbinf := compterFaibles(equipe)
 	fmt.Println("Soldats avec moins de 800 PV :", nbinf)
+	fmt.Println("un ennemi attaque combien fait-il de degats ?")
+	fmt.Scan(&degats)
+	attaquerEquipe(&equipe, degats)
+	afficherEtat(equipe)
 }
 
 type Soldat struct {
@@ -72,4 +77,20 @@ func compterFaibles(equipe [6]Soldat) int {
 		}
 	}
 	return cpt
+}
+func attaquerEquipe(equipe *[6]Soldat, degats int) {
+	for i := 0; i < len(equipe); i++ {
+		(*equipe)[i].vie -= degats
+	}
+}
+func afficherEtat(equipe [6]Soldat) {
+	fmt.Println("=== ÉTAT DE L'ÉQUIPE ===")
+	for i := 0; i < len(equipe); i++ {
+		fmt.Printf(equipe[i].nom)
+		if equipe[i].vie <= 0 {
+			fmt.Println(" est KO !")
+		} else {
+			fmt.Println("vie :", equipe[i].vie)
+		}
+	}
 }
