@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	degats := 0
-	nbatk := 0
+	var degats int
+	var nbatk int
 	nbatkinv := 0
 	equipe := [6]Soldat{
 		{"Arthas", 1200, 250},
@@ -21,15 +21,31 @@ func main() {
 	fmt.Println("Le soldat avec le plus d'attaque est:", atkplus.nom, "avec :", atkplus.attaque, "d'attaque")
 	moyenne := calculerVieMoyenne(equipe)
 	fmt.Println("Vie moyenne :", moyenne)
-	for peutContinuer(equipe) == true {
-
-		nbinf := compterFaibles(equipe)
-		fmt.Println("Soldats avec moins de 800 PV :", nbinf)
-		fmt.Printf("Nombre d'attaques ennemies : ")
-		fmt.Scan(&nbatk)
+	for peutContinuer(equipe) == true { //pour le systeme d'erreur j'ai piqué un truc sur stackoverflow
+		for {
+			fmt.Printf("Nombre d'attaques ennemies : ")
+			_, err := fmt.Scan(&nbatk)
+			if err != nil || nbatk <= 0 {
+				fmt.Println("NAN un entier positif stp")
+				nbatk = 0
+				var vid string
+				fmt.Scanln(&vid)
+				continue
+			}
+			break
+		}
 		for nbatkinv < nbatk {
-			fmt.Printf("attaque %d :", nbatkinv+1)
-			fmt.Scan(&degats)
+			for {
+				fmt.Printf("Attaque %d : ", nbatkinv+1)
+				_, err := fmt.Scan(&degats)
+				if err != nil || degats < 0 {
+					fmt.Println("toujours pas un entier positif")
+					var vid2 string
+					fmt.Scanln(&vid2)
+					continue
+				}
+				break
+			}
 			attaquerEquipe(&equipe, degats)
 			afficherEtat(equipe)
 			nbatkinv++
